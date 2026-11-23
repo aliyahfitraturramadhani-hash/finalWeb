@@ -43,11 +43,11 @@ export async function proxy(request) {
     }
 
     // ====================================
-    // PEGAWAI PERPUSTAKAAN
+    // PEGAWAI PERPUSTAKAAN & ADMIN
     // ====================================
 
     if (pathname.startsWith("/pegawai")) {
-      if (role !== "librarian") {
+      if (role !== "librarian" && role !== "admin") {
         return redirectByRole(role, request);
       }
     }
