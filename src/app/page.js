@@ -1,5 +1,9 @@
 import { query } from "@/lib/db";
 import HomeExperience from "@/app/components/HomeExperience";
+import {
+  getPopularBooks,
+  getPublishedAnnouncements,
+} from "@/lib/announcements";
 
 export const dynamic = "force-dynamic";
 
@@ -48,10 +52,31 @@ export default async function Home() {
     LIMIT 25
   `);
 
+  // =========================================
+  // POPULAR BOOKS & LATEST ANNOUNCEMENTS
+  // =========================================
+
+  const popularBooks = await getPopularBooks(5);
+
+  const announcementRows = await getPublishedAnnouncements(3);
+
+  const announcements = announcementRows.map((item) => ({
+    id: item.id,
+    judul: item.judul,
+    kategori: item.kategori,
+    tanggal: item.tanggal,
+    ringkasan:
+      item.isi.length > 160
+        ? `${item.isi.slice(0, 160).trim()}...`
+        : item.isi,
+  }));
+
   return (
     <HomeExperience
       categories={categories}
       books={books}
+      popularBooks={popularBooks}
+      announcements={announcements}
     />
   );
 }
