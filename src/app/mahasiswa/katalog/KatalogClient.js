@@ -333,29 +333,32 @@ export default function KatalogClient({ books = [] }) {
             </p>
           </div>
 
-  {/* BUTTON */}
+{/* BUTTON */}
 
-{available ? (
-  <button
-    onClick={() => toggleBook(book.id)}
-    disabled={loading}
-    className={`mt-5 w-full rounded-xl py-3 font-semibold transition ${
-      isSelected
-        ? "bg-[#292546] text-[#F4B63F] ring-1 ring-[#F4B63F]"
-        : "bg-[#F4B63F] text-[#111027] hover:bg-[#FFD16C]"
-    } disabled:cursor-not-allowed disabled:opacity-40`}
-  >
-    {isSelected ? "✓ Buku Dipilih" : "Ajukan Pinjam"}
-  </button>
-) : (
-  <button
-    onClick={() => handleReservation(book.id)}
-    disabled={loading}
-    className="mt-5 w-full rounded-xl border border-[#F4B63F] bg-transparent py-3 font-semibold text-[#F4B63F] transition hover:bg-[#F4B63F] hover:text-[#111027] disabled:cursor-not-allowed disabled:opacity-40"
-  >
-    {loading ? "Memproses..." : "Reservasi Buku"}
-  </button>
-)}
+<div className="mt-auto pt-5">
+  {available ? (
+    <button
+      onClick={() => toggleBook(book.id)}
+      disabled={loading}
+      className={`w-full rounded-xl py-3 font-semibold transition ${
+        isSelected
+          ? "bg-[#292546] text-[#F4B63F] ring-1 ring-[#F4B63F]"
+          : "bg-[#F4B63F] text-[#111027] hover:bg-[#FFD16C]"
+      } disabled:cursor-not-allowed disabled:opacity-40`}
+    >
+      {isSelected ? "✓ Buku Dipilih" : "Ajukan Pinjam"}
+    </button>
+  ) : (
+    <button
+      onClick={() => handleReservation(book.id)}
+      disabled={loading}
+      className="w-full rounded-xl border border-[#F4B63F] bg-transparent py-3 font-semibold text-[#F4B63F] transition hover:bg-[#F4B63F] hover:text-[#111027] disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      {loading ? "Memproses..." : "Reservasi Buku"}
+    </button>
+  )}
+</div>
+
         </div>
       </article>
     );
