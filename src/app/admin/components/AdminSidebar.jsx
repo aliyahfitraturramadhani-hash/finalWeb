@@ -124,7 +124,7 @@ export default function AdminSidebar() {
         </div>
 
         {/* NAVIGATION */}
-        <nav className="flex-1 space-y-3 overflow-y-auto">
+        <nav className="admin-sidebar-scroll flex-1 space-y-3 overflow-y-auto">
           {menuItems.map((item) => {
             const active = isActive(item.href);
 
