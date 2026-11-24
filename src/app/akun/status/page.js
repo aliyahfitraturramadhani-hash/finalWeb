@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { query } from "@/lib/db";
-
+//ini adalah bagian dari halaman status akun, yang akan menampilkan status akun pengguna saat ini. Jika akun aktif, pengguna akan diarahkan ke halaman sesuai peran mereka. Jika akun ditangguhkan, ditinjau, atau ditolak, pesan yang sesuai akan ditampilkan. 
 export default async function AccountStatusPage() {
   const session = await getSession();
 
