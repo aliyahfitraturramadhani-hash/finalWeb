@@ -2268,7 +2268,10 @@
 }
 
 
-/* CUSTOM HORIZONTAL SCROLLBAR */
+/* =========================================
+   DEFAULT SCROLLBAR - DASHBOARD & OTHER PAGES
+========================================= */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -2286,4 +2289,81 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #F5B544;
+}
+
+
+/* =========================================
+   PUBLIC MAROON SCROLLBAR
+   LANDING PAGE & PUBLIC ANNOUNCEMENTS
+========================================= */
+
+.public-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #5a2938 #3b1725;
+}
+
+.public-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.public-scrollbar::-webkit-scrollbar-track {
+  background: #3b1725;
+}
+
+.public-scrollbar::-webkit-scrollbar-thumb {
+  background: #5a2938;
+  border-radius: 10px;
+  border: 2px solid #3b1725;
+}
+
+.public-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8b4659;
+}
+
+/* LANDING PAGE SCROLLBAR */
+html:has(.landing-page) {
+  scrollbar-width: thin;
+  scrollbar-color: #7a394b #351923;
+}
+
+html:has(.landing-page)::-webkit-scrollbar {
+  width: 8px;
+}
+
+html:has(.landing-page)::-webkit-scrollbar-track {
+  background: #351923 !important;
+}
+
+html:has(.landing-page)::-webkit-scrollbar-thumb {
+  background: #7a394b !important;
+  border-radius: 8px;
+  border: 1px solid #351923;
+}
+
+html:has(.landing-page)::-webkit-scrollbar-thumb:hover {
+  background: #a04f64 !important;
+}
+
+/* ANNOUNCEMENT PAGE SCROLLBAR */
+html:has(.announcement-page) {
+  scrollbar-width: thin;
+  scrollbar-color: #7a394b #351923;
+}
+
+html:has(.announcement-page)::-webkit-scrollbar {
+  width: 8px;
+}
+
+html:has(.announcement-page)::-webkit-scrollbar-track {
+  background: #351923 !important;
+}
+
+html:has(.announcement-page)::-webkit-scrollbar-thumb {
+  background: #7a394b !important;
+  border-radius: 8px;
+  border: 1px solid #351923;
+}
+
+html:has(.announcement-page)::-webkit-scrollbar-thumb:hover {
+  background: #a04f64 !important;
 }
