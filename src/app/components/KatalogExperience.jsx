@@ -412,7 +412,7 @@ export default function KatalogExperience({
       Collection
     </Link>
 
-    <Link href="#categories">
+    <Link href="/#categories">
       Categories
     </Link>
 
