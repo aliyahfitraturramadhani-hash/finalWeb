@@ -270,7 +270,7 @@ function handleCategoriesClick(event) {
   ];
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#351923] text-[#F5F0E8]">
+  <main className="landing-page min-h-screen overflow-hidden bg-[#351923] text-[#F5F0E8]">
 
       {/* NAVBAR */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/15 bg-[#351923]/40 px-6 py-5 shadow-lg shadow-black/5 backdrop-blur-2xl backdrop-saturate-150 md:px-16">
