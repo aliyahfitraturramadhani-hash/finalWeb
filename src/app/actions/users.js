@@ -379,3 +379,39 @@ export async function deleteUser(id) {
     throw new Error(error.message || "Gagal menghapus pengguna.");
   }
 }
+
+
+// ACCEPT USER
+export async function acceptUser(id) {
+  await requireAdmin();
+
+  const userId = Number(id);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    throw new Error("ID pengguna tidak valid.");
+  }
+
+  return await withTransaction(async (client) => {
+    const result = await client.query(
+      `
+      UPDATE users
+      SET
+        status = 'active',
+        alasan_penolakan = NULL,
+        updated_at = NOW()
+      WHERE id = $1
+        AND status = 'pending'
+      RETURNING id, nama, email, role, status
+      `,
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error(
+        "Pengguna tidak ditemukan atau akun sudah tidak berstatus Menunggu."
+      );
+    }
+
+    return result.rows[0];
+  });
+}
