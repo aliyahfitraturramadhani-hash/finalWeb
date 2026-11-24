@@ -115,7 +115,7 @@ export default function PegawaiSidebar({ user }) {
         </div>
 
         {/* NAVIGATION */}
-        <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+        <nav className="pegawai-sidebar-scroll min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-2">
           {menuItems.map(({ label, href }) => {
             const active = isActive(href);
 
