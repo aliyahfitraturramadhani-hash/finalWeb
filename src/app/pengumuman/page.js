@@ -17,7 +17,7 @@ export default async function PengumumanPublikPage() {
   const announcements = await getPublishedAnnouncements();
 
   return (
-    <main className="min-h-screen bg-[#351923] text-[#F5F0E8]">
+    <main className="announcement-page public-scrollbar min-h-screen bg-[#351923] text-[#F5F0E8]">
 
       {/* NAVBAR */}
       <PublicNavbar />
