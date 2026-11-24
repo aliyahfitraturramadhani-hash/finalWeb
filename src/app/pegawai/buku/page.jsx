@@ -30,8 +30,14 @@ export default function BookManagementPage() {
   const [categories, setCategories] = useState([]);
 
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [stockFilter, setStockFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+    // PAGINATION
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -73,27 +79,77 @@ export default function BookManagementPage() {
     loadData();
   }, []);
 
-  // ==========================================
-  // SEARCH
-  // ==========================================
+ // ==========================================
+// SEARCH & FILTER
+// ==========================================
 
-  const filteredBooks = useMemo(() => {
-    const keyword = search.toLowerCase();
+const filteredBooks = useMemo(() => {
+  const keyword = search.toLowerCase().trim();
 
-    return books.filter((book) => {
-      const categoryText = (book.categories || [])
-        .map((category) => category.nama_kategori)
-        .join(" ")
-        .toLowerCase();
+  return books.filter((book) => {
+    // SEARCH
+    const categoryText = (book.categories || [])
+      .map((category) => category.nama_kategori)
+      .join(" ")
+      .toLowerCase();
 
-      return (
-        book.judul?.toLowerCase().includes(keyword) ||
-        book.isbn?.toLowerCase().includes(keyword) ||
-        book.penulis?.toLowerCase().includes(keyword) ||
-        categoryText.includes(keyword)
+    const matchesSearch =
+      book.judul?.toLowerCase().includes(keyword) ||
+      book.isbn?.toLowerCase().includes(keyword) ||
+      book.penulis?.toLowerCase().includes(keyword) ||
+      categoryText.includes(keyword);
+
+    // CATEGORY FILTER
+    const matchesCategory =
+      !selectedCategory ||
+      (book.categories || []).some(
+        (category) =>
+          String(category.id) === String(selectedCategory)
       );
-    });
-  }, [books, search]);
+
+    // STOCK FILTER
+    const available = Number(book.stok_tersedia || 0);
+
+    const matchesStock =
+      stockFilter === "all" ||
+      (stockFilter === "available" && available > 0) ||
+      (stockFilter === "unavailable" && available === 0);
+
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesStock
+    );
+  });
+}, [books, search, selectedCategory, stockFilter]);
+
+  // ==========================================
+// PAGINATION
+// ==========================================
+
+const totalPages = Math.max(
+  1,
+  Math.ceil(filteredBooks.length / itemsPerPage)
+);
+
+const paginatedBooks = useMemo(() => {
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
+  return filteredBooks.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+}, [filteredBooks, currentPage, itemsPerPage]);
+
+const startItem =
+  filteredBooks.length === 0
+    ? 0
+    : (currentPage - 1) * itemsPerPage + 1;
+
+const endItem = Math.min(
+  currentPage * itemsPerPage,
+  filteredBooks.length
+);
 
   // ==========================================
   // OPEN ADD PANEL
@@ -385,251 +441,460 @@ function handleRemoveCover() {
           </div>
         )}
 
-        {/* SEARCH AND ADD */}
+{/* ==========================================
+    SEARCH, FILTER & ADD
+========================================== */}
 
-        <section className="flex flex-col sm:flex-row gap-4 justify-between mb-7">
+<section className="mb-7 space-y-4">
 
-          <input
-            type="text"
-            placeholder="Cari judul, ISBN, pengarang, atau kategori..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:max-w-xl bg-[#211C45] border border-white/10 rounded-xl px-5 py-4 outline-none focus:border-[#F5B544]"
-          />
+  {/* SEARCH & ADD BUTTON */}
+
+  <div className="flex flex-col lg:flex-row gap-4">
+
+    {/* SEARCH */}
+
+    <div className="relative flex-1">
+
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+        ⌕
+      </span>
+
+      <input
+        type="text"
+        placeholder="Cari judul, ISBN, pengarang, atau kategori..."
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setCurrentPage(1);
+        }}
+        className="w-full rounded-xl border border-white/10 bg-[#211C45] pl-12 pr-4 py-4 text-white placeholder:text-gray-500 outline-none transition focus:border-[#FF6B8B]"
+      />
+
+    </div>
+
+    {/* ADD BOOK */}
+
+    <button
+      type="button"
+      onClick={openAddPanel}
+      className="bg-[#FF6B8B] hover:bg-[#ff5278] text-[#211C45] font-bold px-6 py-4 rounded-xl transition whitespace-nowrap"
+    >
+      + Tambah Buku
+    </button>
+
+  </div>
+
+  {/* FILTERS */}
+
+  <div className="flex flex-col sm:flex-row gap-3">
+
+    {/* CATEGORY FILTER */}
+
+    <div className="flex-1">
+
+      <select
+        value={selectedCategory}
+        onChange={(e) => {
+          setSelectedCategory(e.target.value);
+          setCurrentPage(1);
+        }}
+        className="w-full rounded-xl border border-white/10 bg-[#211C45] px-4 py-3 text-gray-300 outline-none transition focus:border-[#FF6B8B]"
+      >
+
+        <option value="">
+          Semua Kategori
+        </option>
+
+        {categories.map((category) => (
+
+          <option
+            key={category.id}
+            value={category.id}
+          >
+            {category.nama_kategori}
+          </option>
+
+        ))}
+
+      </select>
+
+    </div>
+
+    {/* STOCK FILTER */}
+
+    <div className="flex-1">
+
+      <select
+        value={stockFilter}
+        onChange={(e) => {
+          setStockFilter(e.target.value);
+          setCurrentPage(1);
+        }}
+        className="w-full rounded-xl border border-white/10 bg-[#211C45] px-4 py-3 text-gray-300 outline-none transition focus:border-[#FF6B8B]"
+      >
+
+        <option value="all">
+          Semua Ketersediaan
+        </option>
+
+        <option value="available">
+          Buku Tersedia
+        </option>
+
+        <option value="unavailable">
+          Stok Habis
+        </option>
+
+      </select>
+
+    </div>
+
+    {/* RESET FILTER */}
+
+    <button
+      type="button"
+      onClick={() => {
+        setSearch("");
+        setSelectedCategory("");
+        setStockFilter("all");
+        setCurrentPage(1);
+      }}
+      className="rounded-xl border border-white/10 px-5 py-3 text-gray-400 transition hover:bg-white/5 hover:text-white whitespace-nowrap"
+    >
+      ↺ Reset Filter
+    </button>
+
+  </div>
+
+</section>
+
+ {/* ======================================
+    BOOK TABLE
+====================================== */}
+
+<section className="bg-[#211C45] border border-white/10 rounded-2xl overflow-hidden">
+
+  {/* TABLE HEADER */}
+
+  <div className="p-6 border-b border-white/10 flex justify-between items-center">
+
+    <div>
+      <h3 className="text-xl font-semibold">
+        Koleksi Buku
+      </h3>
+
+      <p className="text-sm text-gray-400 mt-1">
+        Daftar koleksi buku perpustakaan.
+      </p>
+    </div>
+
+    <span className="text-sm text-gray-400">
+      {filteredBooks.length} buku
+    </span>
+
+  </div>
+
+  {/* TABLE */}
+
+  {loading ? (
+
+    <div className="p-12 text-center text-gray-400">
+      Memuat koleksi buku...
+    </div>
+
+  ) : (
+
+    <div className="w-full overflow-x-auto">
+
+      <table className="w-full min-w-[900px] text-left">
+
+        {/* TABLE HEAD */}
+
+        <thead className="bg-[#19152F] text-gray-400 text-xs uppercase tracking-wider">
+
+          <tr>
+            <th className="px-6 py-5">Buku</th>
+            <th className="px-6 py-5">Kategori</th>
+            <th className="px-6 py-5">Stok</th>
+            <th className="px-6 py-5">ISBN</th>
+            <th className="px-6 py-5 text-center">Aksi</th>
+          </tr>
+
+        </thead>
+
+        {/* TABLE BODY */}
+
+        <tbody className="divide-y divide-white/10">
+
+          {paginatedBooks.map((book) => {
+
+            const total = Number(book.stok_total || 0);
+
+            const available = Number(
+              book.stok_tersedia || 0
+            );
+
+            const percentage =
+              total > 0
+                ? (available / total) * 100
+                : 0;
+
+            return (
+
+              <tr
+                key={book.id}
+                className="hover:bg-white/5 transition"
+              >
+
+                {/* BOOK */}
+
+                <td className="px-6 py-5 min-w-[280px]">
+
+                  <div className="flex items-center gap-4">
+
+                    <div className="w-12 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-[#F5B544] to-[#8A4350] flex items-center justify-center shrink-0">
+
+                      {book.sampul ? (
+
+                        <img
+                          src={book.sampul}
+                          alt={book.judul}
+                          className="w-full h-full object-cover"
+                        />
+
+                      ) : (
+
+                        <span className="text-[#211C45] font-bold text-xs">
+                          BOOKLYN
+                        </span>
+
+                      )}
+
+                    </div>
+
+                    <div className="min-w-0">
+
+                      <p className="font-semibold break-words">
+                        {book.judul}
+                      </p>
+
+                      <p className="text-sm text-gray-400 mt-1 break-words">
+                        {book.penulis}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                {/* CATEGORY */}
+
+                <td className="px-6 py-5 min-w-[220px]">
+
+                  <div className="flex flex-wrap gap-1.5">
+
+                    {(book.categories || []).map((category) => (
+
+                      <span
+                        key={category.id}
+                        className="text-xs bg-[#F5B544]/10 text-[#F5B544] px-2 py-1 rounded-md"
+                      >
+                        {category.nama_kategori}
+                      </span>
+
+                    ))}
+
+                  </div>
+
+                </td>
+
+                {/* STOCK */}
+
+                <td className="px-6 py-5 min-w-[180px]">
+
+                  <div className="flex justify-between text-sm mb-2">
+
+                    <span
+                      className={
+                        available === 0
+                          ? "text-[#FF6B8B]"
+                          : "text-white"
+                      }
+                    >
+                      {available}/{total}
+                    </span>
+
+                    <span className="text-gray-500">
+                      tersedia
+                    </span>
+
+                  </div>
+
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+
+                    <div
+                      className={`h-full rounded-full ${
+                        available === 0
+                          ? "bg-[#FF6B8B]"
+                          : "bg-[#2BB5A0]"
+                      }`}
+                      style={{
+                        width: `${percentage}%`,
+                      }}
+                    />
+
+                  </div>
+
+                </td>
+
+                {/* ISBN */}
+
+                <td className="px-6 py-5 text-sm text-gray-400 min-w-[150px]">
+                  {book.isbn || "-"}
+                </td>
+
+                {/* ACTION */}
+
+                <td className="px-6 py-5 min-w-[150px]">
+
+                  <div className="flex justify-center gap-2">
+
+                    <button
+                      type="button"
+                      onClick={() => openEditPanel(book)}
+                      className="px-3 py-2 rounded-lg bg-[#F5B544]/10 text-[#F5B544] hover:bg-[#F5B544] hover:text-[#211C45] transition text-sm"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(book)}
+                      className="px-3 py-2 rounded-lg bg-[#FF6B8B]/10 text-[#FF6B8B] hover:bg-[#FF6B8B] hover:text-white transition text-sm"
+                    >
+                      Hapus
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            );
+
+          })}
+
+        </tbody>
+
+      </table>
+
+      {/* EMPTY STATE */}
+
+      {filteredBooks.length === 0 && (
+
+        <div className="p-12 text-center text-gray-400">
+          Tidak ada buku yang ditemukan.
+        </div>
+
+      )}
+
+    </div>
+
+  )}
+
+  {/* ======================================
+      PAGINATION
+  ====================================== */}
+
+  {!loading && filteredBooks.length > 0 && (
+
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 px-6 py-5">
+
+      {/* DATA INFO */}
+
+      <p className="text-sm text-gray-400 text-center sm:text-left">
+
+        Menampilkan{" "}
+
+        <span className="text-white font-medium">
+          {startItem}-{endItem}
+        </span>
+
+        {" "}dari{" "}
+
+        <span className="text-white font-medium">
+          {filteredBooks.length}
+        </span>
+
+        {" "}buku
+
+      </p>
+
+      {/* PAGINATION BUTTONS */}
+
+      <div className="flex flex-wrap items-center justify-center gap-2">
+
+        {/* PREVIOUS */}
+
+        <button
+          type="button"
+          onClick={() =>
+            setCurrentPage((prev) =>
+              Math.max(1, prev - 1)
+            )
+          }
+          disabled={currentPage === 1}
+          className="rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ← Previous
+        </button>
+
+        {/* PAGE NUMBERS */}
+
+        {Array.from(
+          { length: totalPages },
+          (_, index) => index + 1
+        ).map((page) => (
 
           <button
+            key={page}
             type="button"
-            onClick={openAddPanel}
-            className="bg-[#F5B544] hover:bg-[#ffc75c] text-[#211C45] font-bold px-6 py-4 rounded-xl transition"
+            onClick={() => setCurrentPage(page)}
+            className={`h-12 min-w-12 rounded-xl px-4 text-sm font-semibold transition ${
+              currentPage === page
+                ? "bg-[#F5B544] text-[#211C45]"
+                : "border border-white/10 text-gray-300 hover:bg-white/5"
+            }`}
           >
-            + Tambah Buku
+            {page}
           </button>
 
-        </section>
+        ))}
 
-        {/* ======================================
-            BOOK TABLE
-        ====================================== */}
+        {/* NEXT */}
 
-        <section className="bg-[#211C45] border border-white/10 rounded-2xl overflow-hidden">
+        <button
+          type="button"
+          onClick={() =>
+            setCurrentPage((prev) =>
+              Math.min(totalPages, prev + 1)
+            )
+          }
+          disabled={currentPage === totalPages}
+          className="rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          Next →
+        </button>
 
-          <div className="p-6 border-b border-white/10 flex justify-between items-center">
+      </div>
 
-            <div>
-              <h3 className="text-xl font-semibold">
-                Koleksi Buku
-              </h3>
+    </div>
 
-              <p className="text-sm text-gray-400 mt-1">
-                Daftar koleksi buku perpustakaan.
-              </p>
-            </div>
+  )}
 
-            <span className="text-sm text-gray-400">
-              {filteredBooks.length} buku
-            </span>
-
-          </div>
-
-          {loading ? (
-
-            <div className="p-12 text-center text-gray-400">
-              Memuat koleksi buku...
-            </div>
-
-          ) : (
-
-            <div className="overflow-x-auto">
-
-              <table className="w-full text-left">
-
-                <thead className="bg-[#19152F] text-gray-400 text-xs uppercase tracking-wider">
-
-                  <tr>
-                    <th className="px-6 py-5">Buku</th>
-                    <th className="px-6 py-5">Kategori</th>
-                    <th className="px-6 py-5">Stok</th>
-                    <th className="px-6 py-5">ISBN</th>
-                    <th className="px-6 py-5 text-center">Aksi</th>
-                  </tr>
-
-                </thead>
-
-                <tbody className="divide-y divide-white/10">
-
-                  {filteredBooks.map((book) => {
-
-                    const total = Number(book.stok_total || 0);
-
-                    const available = Number(
-                      book.stok_tersedia || 0
-                    );
-
-                    const percentage =
-                      total > 0
-                        ? (available / total) * 100
-                        : 0;
-
-                    return (
-
-                      <tr
-                        key={book.id}
-                        className="hover:bg-white/5 transition"
-                      >
-
-                        {/* BOOK INFORMATION */}
-
-                        <td className="px-6 py-5">
-
-                          <div className="flex items-center gap-4">
-
-                            <div className="w-12 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-[#F5B544] to-[#8A4350] flex items-center justify-center shrink-0">
-
-                              {book.sampul ? (
-
-                                <img
-                                  src={book.sampul}
-                                  alt={book.judul}
-                                  className="w-full h-full object-cover"
-                                />
-
-                              ) : (
-
-                                <span className="text-[#211C45] font-bold text-xs">
-                                  BOOKLYN
-                                </span>
-
-                              )}
-
-                            </div>
-
-                            <div>
-                              <p className="font-semibold">
-                                {book.judul}
-                              </p>
-
-                              <p className="text-sm text-gray-400 mt-1">
-                                {book.penulis}
-                              </p>
-                            </div>
-
-                          </div>
-
-                        </td>
-
-                        {/* CATEGORIES */}
-
-                        <td className="px-6 py-5 min-w-52">
-
-                          <div className="flex flex-wrap gap-1.5">
-
-                            {(book.categories || []).map((category) => (
-
-                              <span
-                                key={category.id}
-                                className="text-xs bg-[#F5B544]/10 text-[#F5B544] px-2 py-1 rounded-md"
-                              >
-                                {category.nama_kategori}
-                              </span>
-
-                            ))}
-
-                          </div>
-
-                        </td>
-
-                        {/* STOCK */}
-
-                        <td className="px-6 py-5 min-w-40">
-
-                          <div className="flex justify-between text-sm mb-2">
-
-                            <span className={
-                              available === 0
-                                ? "text-[#FF6B8B]"
-                                : "text-white"
-                            }>
-                              {available}/{total}
-                            </span>
-
-                            <span className="text-gray-500">
-                              tersedia
-                            </span>
-
-                          </div>
-
-                          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-
-                            <div
-                              className={`h-full rounded-full ${
-                                available === 0
-                                  ? "bg-[#FF6B8B]"
-                                  : "bg-[#2BB5A0]"
-                              }`}
-                              style={{
-                                width: `${percentage}%`,
-                              }}
-                            />
-
-                          </div>
-
-                        </td>
-
-                        {/* ISBN */}
-
-                        <td className="px-6 py-5 text-sm text-gray-400">
-                          {book.isbn || "-"}
-                        </td>
-
-                        {/* ACTION */}
-
-                        <td className="px-6 py-5">
-
-                          <div className="flex justify-center gap-2">
-
-                            <button
-                              type="button"
-                              onClick={() => openEditPanel(book)}
-                              className="px-3 py-2 rounded-lg bg-[#F5B544]/10 text-[#F5B544] hover:bg-[#F5B544] hover:text-[#211C45] transition text-sm"
-                            >
-                              Edit
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setDeleteTarget(book)}
-                              className="px-3 py-2 rounded-lg bg-[#FF6B8B]/10 text-[#FF6B8B] hover:bg-[#FF6B8B] hover:text-white transition text-sm"
-                            >
-                              Hapus
-                            </button>
-
-                          </div>
-
-                        </td>
-
-                      </tr>
-
-                    );
-
-                  })}
-
-                </tbody>
-
-              </table>
-
-              {!loading && filteredBooks.length === 0 && (
-
-                <div className="p-12 text-center text-gray-400">
-                  Tidak ada buku yang ditemukan.
-                </div>
-
-              )}
-
-            </div>
-
-          )}
-
-        </section>
+</section>
 
         <p className="text-gray-500 text-sm mt-5">
           BOOKLYN · Library Collection Management
