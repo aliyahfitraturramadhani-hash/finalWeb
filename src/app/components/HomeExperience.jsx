@@ -940,6 +940,58 @@ function handleCategoriesClick(event) {
           Become a Member ↗
         </Link>
 
+{/* CONTACT ADMIN */}
+<div className="mx-auto mt-16 max-w-xl rounded-2xl border border-[#D6AA65]/20 bg-[#D6AA65]/5 px-6 py-5 text-left transition hover:border-[#D6AA65]/40 hover:bg-[#D6AA65]/10">
+
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+    {/* TEXT */}
+    <div>
+      <p className="text-xs uppercase tracking-[0.2em] text-[#D6AA65]">
+        Interested in joining our team?
+      </p>
+
+      <h3 className="mt-2 font-serif text-xl text-[#F5F0E8]">
+        Become a BOOKLYN Staff
+      </h3>
+
+      <p className="mt-2 max-w-sm text-sm leading-6 text-white/50">
+        Interested in becoming part of our library team?
+        Contact our administrator for further information.
+      </p>
+    </div>
+
+    {/* CONTACT */}
+    <div className="flex shrink-0 flex-col gap-3 text-sm">
+
+      <a
+        href="mailto:admin@booklyn-library.com"
+        className="flex items-center gap-3 text-[#F5F0E8]/80 transition hover:text-[#D6AA65]"
+      >
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#D6AA65]/10 text-[#D6AA65]">
+          ✉
+        </span>
+
+        admin@booklyn-library.com
+      </a>
+
+      <a
+        href="tel:+6281234567890"
+        className="flex items-center gap-3 text-[#F5F0E8]/80 transition hover:text-[#D6AA65]"
+      >
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#D6AA65]/10 text-[#D6AA65]">
+          ☎
+        </span>
+
+        +62 812-3456-7890
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
       </section>
 
       {/* FOOTER */}
