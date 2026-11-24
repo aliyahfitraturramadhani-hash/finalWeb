@@ -6,6 +6,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  acceptUser,
 } from "@/app/actions/users";
 
 const EMPTY_FORM = {
@@ -227,6 +228,23 @@ const endIndex = Math.min(
     }
   }
 
+// ACCEPT USER
+async function handleAccept(user) {
+  if (user.status !== "pending") return;
+
+  setError("");
+  setSuccess("");
+
+  try {
+    await acceptUser(user.id);
+
+    setSuccess(`Akun ${user.nama} berhasil diterima.`);
+    await loadUsers();
+  } catch (err) {
+    setError(err.message || "Gagal menerima akun pengguna.");
+  }
+}
+
   // FORM STYLES
   const inputClass =
     "w-full rounded-xl border border-white/10 bg-[#211C45] px-4 py-3 text-white outline-none transition focus:border-[#FF6B8B]";
@@ -438,17 +456,17 @@ return (
 
               <table className="w-full min-w-[850px] text-left">
 
-                <thead className="border-b border-white/10 bg-white/[0.03]">
+              <thead className="border-b border-white/10 bg-white/[0.03]">
 
-                  <tr className="text-xs uppercase tracking-wider text-gray-400">
-                    <th className="px-5 py-5">Pengguna</th>
-                    <th className="px-5 py-5">Peran</th>
-                    <th className="px-5 py-5">NIM / ID</th>
-                    <th className="px-5 py-5">Status</th>
-                    <th className="px-5 py-5">Aksi</th>
-                  </tr>
+                <tr className="text-xs uppercase tracking-wider text-gray-400">
+                  <th className="px-5 py-5">Pengguna</th>
+                  <th className="px-5 py-5">Peran</th>
+                  <th className="px-5 py-5">NIM / ID</th>
+                  <th className="px-5 py-5">Status</th>
+                  <th className="px-5 py-5 text-center">Aksi</th>
+                </tr>
 
-                </thead>
+              </thead>
 
                 <tbody className="divide-y divide-white/10">
 
@@ -524,30 +542,50 @@ return (
 
                         </td>
 
-                        {/* ACTIONS */}
-                        <td className="px-5 py-5">
+{/* ACTIONS */}
+<td className="px-5 py-5">
+  <div className="grid grid-cols-3 items-center gap-2">
 
-                          <div className="flex gap-2">
+    {/* ACCEPT */}
+    <div className="flex justify-center">
+      {user.status === "pending" ? (
+        <button
+          onClick={() => handleAccept(user)}
+          className="rounded-lg bg-[#2BB5A0]/15 px-3 py-2 text-sm font-medium text-[#2BB5A0] transition hover:bg-[#2BB5A0]/25"
+        >
+          Accept
+        </button>
+      ) : (
+        <span className="invisible rounded-lg px-3 py-2 text-sm">
+          Accept
+        </span>
+      )}
+    </div>
 
-                            <button
-                              onClick={() => openEditPanel(user)}
-                              disabled={isCurrentUser}
-                              className="rounded-lg bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
-                            >
-                              Edit
-                            </button>
+    {/* EDIT */}
+    <div className="flex justify-center">
+      <button
+        onClick={() => openEditPanel(user)}
+        disabled={isCurrentUser}
+        className="rounded-lg bg-white/10 px-3 py-2 text-sm transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        Edit
+      </button>
+    </div>
 
-                            <button
-                              onClick={() => setDeleteTarget(user)}
-                              disabled={isCurrentUser}
-                              className="rounded-lg bg-[#FF6B8B]/10 px-3 py-2 text-sm text-[#FF829D] transition hover:bg-[#FF6B8B]/20 disabled:cursor-not-allowed disabled:opacity-30"
-                            >
-                              Hapus
-                            </button>
+    {/* DELETE */}
+    <div className="flex justify-center">
+      <button
+        onClick={() => setDeleteTarget(user)}
+        disabled={isCurrentUser}
+        className="rounded-lg bg-[#FF6B8B]/10 px-3 py-2 text-sm text-[#FF829D] transition hover:bg-[#FF6B8B]/20 disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        Hapus
+      </button>
+    </div>
 
-                          </div>
-
-                        </td>
+  </div>
+</td>
 
                       </tr>
                     );
