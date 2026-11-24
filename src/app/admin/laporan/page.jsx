@@ -41,6 +41,10 @@ export default function AdminReportPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  // FILTER DETAIL TRANSAKSI
+const [transactionSearch, setTransactionSearch] = useState("");
+const [transactionStatus, setTransactionStatus] = useState("semua");
+
   // PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 8;
@@ -85,10 +89,33 @@ export default function AdminReportPage() {
     });
   }, [transactions, startDate, endDate]);
 
-  // RESET PAGINATION SAAT FILTER BERUBAH
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [startDate, endDate]);
+// FILTER DETAIL REKAP TRANSAKSI
+const tableFilteredTransactions = useMemo(() => {
+  return filteredTransactions.filter((transaction) => {
+    const search = transactionSearch.toLowerCase().trim();
+
+    const matchesSearch =
+      !search ||
+      transaction.kode_pinjam?.toLowerCase().includes(search) ||
+      transaction.nama_mahasiswa?.toLowerCase().includes(search) ||
+      transaction.nomor_identitas?.toLowerCase().includes(search) ||
+      transaction.email_mahasiswa?.toLowerCase().includes(search) ||
+      (transaction.daftar_buku || []).some((book) =>
+        book.judul?.toLowerCase().includes(search)
+      );
+
+    const matchesStatus =
+      transactionStatus === "semua" ||
+      transaction.status === transactionStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+}, [filteredTransactions, transactionSearch, transactionStatus]);
+
+// RESET PAGINATION SAAT FILTER BERUBAH
+useEffect(() => {
+  setCurrentPage(1);
+}, [startDate, endDate, transactionSearch, transactionStatus]);
 
   // STATISTICS
   const statistics = useMemo(() => {
@@ -561,204 +588,312 @@ export default function AdminReportPage() {
         </section>
 
         {/* TRANSACTION TABLE */}
-        <section className="rounded-2xl border border-white/10 bg-[#211C45]">
+<section className="rounded-2xl border border-white/10 bg-[#211C45]">
 
-          {/* TABLE HEADER */}
-          <div className="flex flex-col justify-between gap-3 border-b border-white/10 p-6 sm:flex-row sm:items-center">
-            <div>
-              <h2 className="text-xl font-bold">
-                Detail Rekap Transaksi
-              </h2>
+  {/* TABLE HEADER */}
+  <div className="flex flex-col justify-between gap-3 border-b border-white/10 p-6 sm:flex-row sm:items-center">
+    <div>
+      <h2 className="text-xl font-bold">
+        Detail Rekap Transaksi
+      </h2>
 
-              <p className="mt-1 text-sm text-gray-400">
-                {filteredTransactions.length} transaksi dalam laporan
-              </p>
-            </div>
+      <p className="mt-1 text-sm text-gray-400">
+        {tableFilteredTransactions.length} transaksi ditemukan
+      </p>
+    </div>
 
-            <button
-              onClick={loadData}
-              disabled={loading}
-              className="rounded-xl border border-white/10 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 disabled:opacity-40"
-            >
-              ↻ Refresh
-            </button>
-          </div>
+    <button
+      onClick={loadData}
+      disabled={loading}
+      className="rounded-xl border border-white/10 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 disabled:opacity-40"
+    >
+      ↻ Refresh
+    </button>
+  </div>
 
-          {/* TABLE CONTENT */}
-          {loading ? (
-            <div className="p-12 text-center text-gray-400">
-              Memuat data laporan...
-            </div>
-          ) : filteredTransactions.length === 0 ? (
-            <div className="p-12 text-center text-gray-400">
-              Tidak ada transaksi pada periode ini.
-            </div>
-          ) : (
-            <>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[950px] text-left">
+  {/* FILTER */}
+  <div className="flex flex-col gap-3 border-b border-white/10 p-5 lg:flex-row">
 
-                  <thead className="border-b border-white/10 bg-white/[0.03]">
-                    <tr className="text-xs uppercase tracking-wider text-gray-400">
-                      <th className="px-5 py-4">Kode</th>
-                      <th className="px-5 py-4">Mahasiswa</th>
-                      <th className="px-5 py-4">Buku</th>
-                      <th className="px-5 py-4">Tanggal</th>
-                      <th className="px-5 py-4">Status</th>
-                      <th className="px-5 py-4">Denda</th>
-                    </tr>
-                  </thead>
+    {/* SEARCH */}
+    <div className="relative flex-1">
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+        ⌕
+      </span>
 
-                  <tbody className="divide-y divide-white/10">
-                    {paginatedTransactions.map((transaction) => (
-                      <tr
-                        key={transaction.id}
-                        className="transition hover:bg-white/[0.03]"
-                      >
+      <input
+        type="text"
+        value={transactionSearch}
+        onChange={(e) => setTransactionSearch(e.target.value)}
+        placeholder="Cari kode, mahasiswa, NIM, atau buku..."
+        className="w-full rounded-xl border border-white/10 bg-[#14112B] py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-[#F5B544]"
+      />
+    </div>
 
-                        {/* KODE */}
-                        <td className="px-5 py-4">
-                          <p className="font-semibold">
-                            {transaction.kode_pinjam}
-                          </p>
+    {/* STATUS FILTER */}
+    <select
+      value={transactionStatus}
+      onChange={(e) => setTransactionStatus(e.target.value)}
+      className="rounded-xl border border-white/10 bg-[#14112B] px-4 py-3 text-sm text-white outline-none transition focus:border-[#F5B544] lg:w-64"
+    >
+      <option value="semua">Semua Status</option>
+      <option value="menunggu_konfirmasi">
+        Menunggu Konfirmasi
+      </option>
+      <option value="sedang_dipinjam">
+        Sedang Dipinjam
+      </option>
+      <option value="selesai">
+        Selesai
+      </option>
+      <option value="ditolak">
+        Ditolak
+      </option>
+    </select>
 
-                          <p className="mt-1 text-xs text-gray-500">
-                            {formatDate(transaction.created_at)}
-                          </p>
-                        </td>
+    {/* RESET FILTER */}
+    <button
+      type="button"
+      onClick={() => {
+        setTransactionSearch("");
+        setTransactionStatus("semua");
+      }}
+      className="rounded-xl border border-white/10 px-5 py-3 text-sm text-gray-400 transition hover:bg-white/5 hover:text-white"
+    >
+      ↻ Reset Filter
+    </button>
 
-                        {/* MAHASISWA */}
-                        <td className="px-5 py-4">
-                          <p className="font-medium">
-                            {transaction.nama_mahasiswa}
-                          </p>
+  </div>
 
-                          <p className="mt-1 text-xs text-gray-500">
-                            {transaction.nomor_identitas || "-"}
-                          </p>
-                        </td>
+  {/* TABLE CONTENT */}
+  {loading ? (
 
-                        {/* BUKU */}
-                        <td className="px-5 py-4">
-                          <p className="max-w-[250px] truncate">
-                            {(transaction.daftar_buku || [])
-                              .map((book) => book.judul)
-                              .join(", ") || "-"}
-                          </p>
+    <div className="p-12 text-center text-gray-400">
+      Memuat data laporan...
+    </div>
 
-                          <p className="mt-1 text-xs text-gray-500">
-                            {transaction.jumlah_buku || 0} eksemplar
-                          </p>
-                        </td>
+  ) : tableFilteredTransactions.length === 0 ? (
 
-                        {/* TANGGAL */}
-                        <td className="px-5 py-4 text-sm text-gray-400">
-                          <p>
-                            Pinjam: {formatDate(transaction.tanggal_pinjam)}
-                          </p>
+    <div className="p-12 text-center text-gray-400">
+      Tidak ada transaksi yang cocok dengan filter.
+    </div>
 
-                          <p className="mt-1">
-                            Tempo: {formatDate(transaction.jatuh_tempo)}
-                          </p>
-                        </td>
+  ) : (
 
-                        {/* STATUS */}
-                        <td className="px-5 py-4">
-                          <span className="rounded-full bg-white/5 px-3 py-2 text-xs font-medium">
-                            {STATUS[transaction.status] || transaction.status}
-                          </span>
-                        </td>
+    <>
 
-                        {/* DENDA */}
-                        <td className="px-5 py-4">
-                          <p className="font-semibold text-[#FF6B8B]">
-                            {formatRupiah(transaction.total_denda)}
-                          </p>
+      {/* TABLE */}
+      <div className="overflow-x-auto">
 
-                          {Number(transaction.denda_belum_dibayar || 0) > 0 && (
-                            <p className="mt-1 text-xs text-[#F5B544]">
-                              Belum lunas
-                            </p>
-                          )}
-                        </td>
+        <table className="w-full min-w-[950px] text-left">
 
-                      </tr>
-                    ))}
-                  </tbody>
+          <thead className="border-b border-white/10 bg-white/[0.03]">
+            <tr className="text-xs uppercase tracking-wider text-gray-400">
+              <th className="px-5 py-4">Kode</th>
+              <th className="px-5 py-4">Mahasiswa</th>
+              <th className="px-5 py-4">Buku</th>
+              <th className="px-5 py-4">Tanggal</th>
+              <th className="px-5 py-4">Status</th>
+              <th className="px-5 py-4">Denda</th>
+            </tr>
+          </thead>
 
-                </table>
-              </div>
+          <tbody className="divide-y divide-white/10">
 
-              {/* PAGINATION */}
-              <div className="flex flex-col justify-between gap-4 border-t border-white/10 p-5 sm:flex-row sm:items-center">
+            {tableFilteredTransactions
+              .slice(
+                (currentPage - 1) * ITEMS_PER_PAGE,
+                currentPage * ITEMS_PER_PAGE
+              )
+              .map((transaction) => (
 
-                {/* INFORMATION */}
-                <p className="text-sm text-gray-400">
-                  Menampilkan{" "}
-                  <span className="font-semibold text-white">
-                    {startItem}-{endItem}
-                  </span>{" "}
-                  dari{" "}
-                  <span className="font-semibold text-white">
-                    {filteredTransactions.length}
-                  </span>{" "}
-                  transaksi
-                </p>
+                <tr
+                  key={transaction.id}
+                  className="transition hover:bg-white/[0.03]"
+                >
 
-                {/* BUTTONS */}
-                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {/* KODE */}
+                  <td className="px-5 py-4">
+                    <p className="font-semibold">
+                      {transaction.kode_pinjam}
+                    </p>
 
-                  {/* PREVIOUS */}
-                  <button
-                    onClick={() =>
-                      setCurrentPage((previous) =>
-                        Math.max(previous - 1, 1)
-                      )
-                    }
-                    disabled={currentPage === 1}
-                    className="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    ← Prev
-                  </button>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {formatDate(transaction.created_at)}
+                    </p>
+                  </td>
 
-                  {/* PAGE NUMBERS */}
-                  {Array.from(
-                    { length: totalPages },
-                    (_, index) => index + 1
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`min-w-10 rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                        currentPage === page
-                          ? "bg-[#2BB5A0] text-[#14112B]"
-                          : "border border-white/10 text-gray-400 hover:bg-white/10"
+                  {/* MAHASISWA */}
+                  <td className="px-5 py-4">
+                    <p className="font-medium">
+                      {transaction.nama_mahasiswa}
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-500">
+                      {transaction.nomor_identitas || "-"}
+                    </p>
+                  </td>
+
+                  {/* BUKU */}
+                  <td className="px-5 py-4">
+                    <p className="max-w-[250px] truncate">
+                      {(transaction.daftar_buku || [])
+                        .map((book) => book.judul)
+                        .join(", ") || "-"}
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-500">
+                      {transaction.jumlah_buku || 0} eksemplar
+                    </p>
+                  </td>
+
+                  {/* TANGGAL */}
+                  <td className="px-5 py-4 text-sm text-gray-400">
+                    <p>
+                      Pinjam: {formatDate(transaction.tanggal_pinjam)}
+                    </p>
+
+                    <p className="mt-1">
+                      Tempo: {formatDate(transaction.jatuh_tempo)}
+                    </p>
+                  </td>
+
+                  {/* STATUS */}
+                  <td className="px-5 py-4">
+                    <span
+                      className={`text-sm font-medium ${
+                        transaction.status === "menunggu_konfirmasi"
+                          ? "text-[#F5B544]"
+                          : transaction.status === "sedang_dipinjam"
+                          ? "text-[#4DA3FF]"
+                          : transaction.status === "selesai"
+                          ? "text-[#2BB5A0]"
+                          : transaction.status === "ditolak"
+                          ? "text-[#FF6B8B]"
+                          : "text-gray-300"
                       }`}
                     >
-                      {page}
-                    </button>
-                  ))}
+                      {STATUS[transaction.status] || transaction.status}
+                    </span>
+                  </td>
 
-                  {/* NEXT */}
-                  <button
-                    onClick={() =>
-                      setCurrentPage((previous) =>
-                        Math.min(previous + 1, totalPages)
-                      )
-                    }
-                    disabled={currentPage === totalPages}
-                    className="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    Next →
-                  </button>
+                  {/* DENDA */}
+                  <td className="px-5 py-4">
+                    <p className="font-semibold text-[#FF6B8B]">
+                      {formatRupiah(transaction.total_denda)}
+                    </p>
 
-                </div>
+                    {Number(transaction.denda_belum_dibayar || 0) > 0 && (
+                      <p className="mt-1 text-xs text-[#F5B544]">
+                        Belum lunas
+                      </p>
+                    )}
+                  </td>
 
-              </div>
-            </>
-          )}
+                </tr>
 
-        </section>
+              ))}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      {/* PAGINATION */}
+      {(() => {
+        const tableTotalPages = Math.ceil(
+          tableFilteredTransactions.length / ITEMS_PER_PAGE
+        );
+
+        const tableStartItem =
+          tableFilteredTransactions.length === 0
+            ? 0
+            : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+
+        const tableEndItem = Math.min(
+          currentPage * ITEMS_PER_PAGE,
+          tableFilteredTransactions.length
+        );
+
+        return (
+
+          <div className="flex flex-col justify-between gap-4 border-t border-white/10 p-5 sm:flex-row sm:items-center">
+
+            {/* INFORMATION */}
+            <p className="text-sm text-gray-400">
+              Menampilkan{" "}
+              <span className="font-semibold text-white">
+                {tableStartItem}-{tableEndItem}
+              </span>{" "}
+              dari{" "}
+              <span className="font-semibold text-white">
+                {tableFilteredTransactions.length}
+              </span>{" "}
+              transaksi
+            </p>
+
+            {/* BUTTONS */}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+
+              {/* PREVIOUS */}
+              <button
+                onClick={() =>
+                  setCurrentPage((previous) =>
+                    Math.max(previous - 1, 1)
+                  )
+                }
+                disabled={currentPage === 1}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                ← Prev
+              </button>
+
+              {/* PAGE NUMBERS */}
+              {Array.from(
+                { length: tableTotalPages },
+                (_, index) => index + 1
+              ).map((page) => (
+
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`min-w-10 rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                    currentPage === page
+                      ? "bg-[#2BB5A0] text-[#14112B]"
+                      : "border border-white/10 text-gray-400 hover:bg-white/10"
+                  }`}
+                >
+                  {page}
+                </button>
+
+              ))}
+
+              {/* NEXT */}
+              <button
+                onClick={() =>
+                  setCurrentPage((previous) =>
+                    Math.min(previous + 1, tableTotalPages)
+                  )
+                }
+                disabled={currentPage === tableTotalPages}
+                className="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                Next →
+              </button>
+
+            </div>
+
+          </div>
+
+        );
+      })()}
+
+    </>
+
+  )}
+
+</section>
+
 
         {/* FOOTER */}
         <footer className="mt-8 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-gray-500 sm:flex-row">
