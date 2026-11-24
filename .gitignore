@@ -22,3 +22,5 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+chunks/
+.git_backup/

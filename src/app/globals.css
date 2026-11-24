@@ -555,7 +555,7 @@
   font-weight: 700;
 }
 
-/* GENRE FILTER */
+/* KATEGORI FILTER */
 
 .catalog-genres {
   display: flex;
@@ -2065,3 +2065,114 @@
   }
 }
 
+@keyframes book-scroll-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes book-scroll-down {
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-book-scroll-up {
+  animation: book-scroll-up 30s linear infinite;
+}
+
+.animate-book-scroll-down {
+  animation: book-scroll-down 30s linear infinite;
+}
+
+/* =========================================================
+   LOGIN BOOK WALL
+========================================================= */
+
+.book-wall-column {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.book-wall-track {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.book-wall-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.3),
+    inset 4px 0 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.book-wall-cover:hover {
+  transform: scale(1.04);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.book-wall-up .book-wall-track {
+  animation: book-wall-up 45s linear infinite;
+}
+
+.book-wall-down .book-wall-track {
+  animation: book-wall-down 45s linear infinite;
+}
+
+@keyframes book-wall-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes book-wall-down {
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-wall-up .book-wall-track,
+  .book-wall-down .book-wall-track {
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .book-wall-up .book-wall-track,
+  .book-wall-down .book-wall-track {
+    animation: none;
+  }
+}
