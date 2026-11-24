@@ -1025,14 +1025,13 @@ export default function BookDetailExperience({
         }
 
         .bd-related-cover {
-          height: 190px;
-          margin-bottom: 12px;
+          width: 100%;
+          aspect-ratio: 2 / 3;
           overflow: hidden;
-          border-radius: 7px;
-          background: rgba(255,255,255,.08);
-          box-shadow: 8px 10px 18px rgba(0,0,0,.2);
-          transition: transform .25s ease;
+          border-radius: 12px;
+          background: transparent;
         }
+
 
         .bd-related-book:hover .bd-related-cover {
           transform: translateY(-7px) rotate(-2deg);
@@ -1041,7 +1040,9 @@ export default function BookDetailExperience({
         .bd-related-cover img {
           width: 100%;
           height: 100%;
+          display: block;
           object-fit: cover;
+          object-position: center;
         }
 
         .bd-related-cover span {
