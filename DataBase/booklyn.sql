@@ -27,6 +27,7 @@ CREATE TABLE users (
   email            VARCHAR(150) NOT NULL UNIQUE,
   password_hash    TEXT         NOT NULL,
   no_hp            VARCHAR(20),
+  nomor_identitas  VARCHAR(30),
   role             VARCHAR(20)  NOT NULL
                    CHECK (role IN ('admin', 'librarian', 'member')),
   status           VARCHAR(20)  NOT NULL DEFAULT 'pending'
