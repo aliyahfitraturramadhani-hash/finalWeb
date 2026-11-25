@@ -194,27 +194,27 @@ CREATE INDEX idx_reviews_book ON reviews (book_id);
 
 
 -- Akun (hash bcrypt dari 'Booklyn123!')
-INSERT INTO users (nama, email, password_hash, no_hp, role, status) VALUES
- ('Admin Booklyn',   'admin@booklyn.test',     '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', NULL,           'admin',     'active'),
- ('Pustakawan Satu', 'librarian@booklyn.test', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000001', 'librarian', 'active'),
- ('Anggota Aktif',   'member@booklyn.test',    '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000002', 'member',    'active');
+INSERT INTO users (nama, email, password_hash, no_hp, role, status, nomor_identitas) VALUES
+('Admin Booklyn',   'admin@unhas.ac.id',     '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000000', 'admin',     'active', '290908'),
+('Pustakawan Satu', 'librarian@unhas.ac.id', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000001', 'librarian', 'active', '251005'),
+('Anggota Aktif',   'member@unhas.ac.id',    '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000002', 'member',    'active', '7371000000000001');
 
-INSERT INTO users (nama, email, password_hash, role, status) VALUES
- ('Anggota Pending', 'pending@booklyn.test', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', 'member', 'pending');
+INSERT INTO users (nama, email, password_hash, no_hp, role, status, nomor_identitas) VALUES
+ ('Anggota Pending', 'pending@unhas.ac.id', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000003', 'member', 'pending', '7371000000000002');
 
-INSERT INTO users (nama, email, password_hash, role, status, alasan_penolakan) VALUES
- ('Anggota Ditolak', 'rejected@booklyn.test', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', 'member', 'rejected', 'Nomor identitas tidak dapat diverifikasi.');
+INSERT INTO users (nama, email, password_hash, no_hp, role, status, alasan_penolakan, nomor_identitas) VALUES
+('Anggota Ditolak', 'rejected@unhas.ac.id', '$2b$10$SPHhqf/VKvDz7VbEn5dxNOP/dL.Tvh94xGaT6HmygdyaxWQVSx29e', '081200000004', 'member', 'rejected', 'Nomor identitas tidak dapat diverifikasi.', '7371000000000003');
 
 -- Data keanggotaan untuk 3 akun member
 INSERT INTO members (user_id, nomor_anggota, nomor_identitas, alamat, masa_berlaku)
 SELECT id, 'BKL-0001', '7371000000000001', 'Makassar', CURRENT_DATE + INTERVAL '1 year'
-FROM users WHERE email = 'member@booklyn.test';
+FROM users WHERE email = 'member@unhas.ac.id';
 
 INSERT INTO members (user_id, nomor_identitas, alamat)
-SELECT id, '7371000000000002', 'Makassar' FROM users WHERE email = 'pending@booklyn.test';
+SELECT id, '7371000000000002', 'Makassar' FROM users WHERE email = 'pending@unhas.ac.id';
 
 INSERT INTO members (user_id, nomor_identitas, alamat)
-SELECT id, '7371000000000003', 'Makassar' FROM users WHERE email = 'rejected@booklyn.test';
+SELECT id, '7371000000000003', 'Makassar' FROM users WHERE email = 'rejected@unhas.ac.id';
 
 -- Kategori
 INSERT INTO categories (nama_kategori, kode_klasifikasi, deskripsi) VALUES
