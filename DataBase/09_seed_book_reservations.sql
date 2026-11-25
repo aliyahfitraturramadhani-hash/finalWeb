@@ -84,7 +84,7 @@ INSERT INTO book_reservations (
     NULL,
     NULL,
     NULL,
-    10,
+    2,
     'Buku telah disiapkan dan menunggu pengambilan.',
     '2026-11-19 09:00:00',
     '2026-11-21 10:00:00'
@@ -107,7 +107,7 @@ INSERT INTO book_reservations (
     NULL,
     NULL,
     NULL,
-    10,
+    2,
     'Buku telah disiapkan untuk anggota.',
     '2026-11-19 11:00:00',
     '2026-11-21 11:00:00'
@@ -130,7 +130,7 @@ INSERT INTO book_reservations (
     '2026-11-13 14:00:00',
     NULL,
     NULL,
-    10,
+    2,
     'Reservasi selesai diproses.',
     '2026-11-10 09:00:00',
     '2026-11-13 14:00:00'
@@ -153,7 +153,7 @@ INSERT INTO book_reservations (
     '2026-11-15 15:00:00',
     NULL,
     NULL,
-    10,
+    2,
     'Reservasi telah diselesaikan.',
     '2026-11-12 10:00:00',
     '2026-11-15 15:00:00'
@@ -199,7 +199,7 @@ INSERT INTO book_reservations (
     NULL,
     NULL,
     '2026-11-15 09:00:00',
-    10,
+    2,
     'Reservasi kedaluwarsa karena buku tidak diambil sesuai batas waktu.',
     '2026-11-10 09:00:00',
     '2026-11-15 09:00:00'
