@@ -29,30 +29,30 @@ CREATE TABLE IF NOT EXISTS book_categories (
 -- 3. INSERT CATEGORIES
 -- =========================================
 
-INSERT INTO categories (nama_kategori)
+INSERT INTO categories (nama_kategori, kode_klasifikasi)
 VALUES
-    ('Anak dan Remaja'),
-    ('Fiksi'),
-    ('Non-Fiksi'),
-    ('Sains dan Teknologi'),
-    ('Sejarah'),
-    ('Fantasi'),
-    ('Adventure'),
-    ('Romance'),
-    ('Mystery'),
-    ('Drama'),
-    ('Contemporary'),
-    ('Young Adult'),
-    ('Coming of Age'),
-    ('Dystopian'),
-    ('Sci-Fi'),
-    ('Inspirational'),
-    ('Education'),
-    ('Fairy Tale'),
-    ('Music'),
-    ('Philosophical'),
-    ('Historical Fiction'),
-    ('Action')
+    ('Anak dan Remaja', '810'),
+    ('Fiksi', '800'),
+    ('Non-Fiksi', '300'),
+    ('Sains dan Teknologi', '500'),
+    ('Sejarah', '900'),
+    ('Fantasi', 'F01'),
+    ('Adventure', 'F02'),
+    ('Romance', 'F03'),
+    ('Mystery', 'F04'),
+    ('Drama', 'F05'),
+    ('Contemporary', 'F06'),
+    ('Young Adult', 'F07'),
+    ('Coming of Age', 'F08'),
+    ('Dystopian', 'F09'),
+    ('Sci-Fi', 'F10'),
+    ('Inspirational', 'F11'),
+    ('Education', 'F12'),
+    ('Fairy Tale', 'F13'),
+    ('Music', 'F14'),
+    ('Philosophical', 'F15'),
+    ('Historical Fiction', 'F16'),
+    ('Action', 'F17')
 ON CONFLICT (nama_kategori) DO NOTHING;
 
 -- =========================================
