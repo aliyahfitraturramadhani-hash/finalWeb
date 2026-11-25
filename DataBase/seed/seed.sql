@@ -32,6 +32,74 @@ INSERT INTO loan_items (id, loan_id, copy_id, tanggal_kembali, kondisi_kembali) 
 (2010,1010,34,'2026-11-08 12:00:00+08','baik'),
 (2011,1011,35,'2026-11-16 12:00:00+08','baik');
 
+-- ============================================================
+-- LOANS TAMBAHAN: 2 RIWAYAT SELESAI UNTUK MAHASISWA BOOKLYN
+-- MEMBER ID: 5
+-- BELUM MEMILIKI REVIEW
+-- ============================================================
+
+-- Loans
+INSERT INTO loans (
+    id,
+    kode_pinjam,
+    member_id,
+    processed_by,
+    status,
+    batas_ambil,
+    tanggal_pinjam,
+    jatuh_tempo,
+    jumlah_perpanjangan,
+    catatan
+) VALUES
+(
+    1012,
+    'DEMO-C-004',
+    5,
+    2,
+    'selesai',
+    '2026-11-23 17:00:00+08',
+    '2026-11-10 10:00:00+08',
+    '2026-11-17',
+    0,
+    'Dataset demo: riwayat selesai untuk pengujian ulasan'
+),
+(
+    1013,
+    'DEMO-C-005',
+    5,
+    2,
+    'selesai',
+    '2026-11-23 17:00:00+08',
+    '2026-11-12 10:00:00+08',
+    '2026-11-19',
+    0,
+    'Dataset demo: riwayat selesai untuk pengujian ulasan'
+);
+
+
+-- Loan items
+INSERT INTO loan_items (
+    id,
+    loan_id,
+    copy_id,
+    tanggal_kembali,
+    kondisi_kembali
+) VALUES
+(
+    2012,
+    1012,
+    36,
+    '2026-11-18 14:00:00+08',
+    'baik'
+),
+(
+    2013,
+    1013,
+    1013,
+    '2026-11-20 14:00:00+08',
+    'baik'
+);
+
 -- Extension requests
 INSERT INTO extension_requests (id, loan_id, member_id, alasan, tanggal_jatuh_tempo_lama, tanggal_jatuh_tempo_baru, status, processed_by, catatan_petugas, requested_at, processed_at) VALUES
 (3001,1004,5,'[DEMO] Membutuhkan waktu tambahan untuk menyelesaikan bacaan.','2026-11-24','2026-12-01','pending',NULL,NULL,'2026-11-20 10:00:00+08',NULL),
