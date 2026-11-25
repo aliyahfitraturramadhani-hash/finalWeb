@@ -181,6 +181,13 @@ const endIndex = Math.min(
   async function handleSubmit(event) {
     event.preventDefault();
 
+    const email = form.email.trim().toLowerCase();
+
+    if (!/^[^\s@]+@[^\s@]+\.ac\.id$/i.test(email)) {
+      setError("Email harus menggunakan email kampus dengan domain .ac.id.");
+      return;
+    }
+
     setSaving(true);
     setError("");
     setSuccess("");
@@ -746,9 +753,13 @@ return (
                 onChange={handleChange}
                 required
                 maxLength={150}
-                placeholder="nama@email.com"
+                placeholder="nama@kampus.ac.id"
                 className={inputClass}
               />
+
+              <p className="mt-2 text-xs text-gray-400">
+                Gunakan email kampus dengan domain .ac.id.
+              </p>
             </div>
 
             {/* PHONE */}
@@ -786,24 +797,22 @@ return (
               </select>
             </div>
 
-            {/* MEMBER IDENTITY */}
-            {form.role === "member" && (
-              <div>
-                <label className={labelClass}>
-                  Nomor Identitas *
-                </label>
+            {/* NOMOR IDENTITAS */}
+            <div>
+              <label className={labelClass}>
+                Nomor Identitas *
+              </label>
 
-                <input
-                  name="nomor_identitas"
-                  value={form.nomor_identitas}
-                  onChange={handleChange}
-                  maxLength={30}
-                  required
-                  placeholder="Masukkan NIM atau nomor identitas"
-                  className={inputClass}
-                />
-              </div>
-            )}
+              <input
+                name="nomor_identitas"
+                value={form.nomor_identitas}
+                onChange={handleChange}
+                maxLength={30}
+                required
+                placeholder="Masukkan nomor identitas"
+                className={inputClass}
+              />
+            </div>
 
             {/* STATUS */}
             <div>
