@@ -87,17 +87,17 @@ Layanan perpustakaan kampus sering menghadapi masalah pencatatan peminjaman manu
 
 ## 5. Fitur Utama
 
-- **Authentication & Authorization** — registrasi (email kampus `.ac.id`), login, logout, dan pembatasan halaman berdasarkan role.
-- **Manajemen Buku** — data buku, kategori (multi-kategori per buku), eksemplar fisik dengan kode unik (contoh `BKL-0009-01`), sampul buku (upload JPG/PNG/WebP maks. 5 MB).
+- **Authentication & Authorization**  registrasi (email kampus `.ac.id`), login, logout, dan pembatasan halaman berdasarkan role.
+- **Manajemen Buku**  data buku, kategori (multi-kategori per buku), eksemplar fisik dengan kode unik (contoh `BKL-0009-01`), sampul buku (upload JPG/PNG/WebP maks. 5 MB).
 - **Peminjaman bertingkat** — `Menunggu Konfirmasi` → `Menunggu Pengambilan` → `Sedang Dipinjam` → `Selesai` (atau `Ditolak` / `Dibatalkan`).
-- **Perpanjangan** — pengajuan oleh mahasiswa, persetujuan/penolakan oleh pegawai.
-- **Denda otomatis** — dihitung saat pengembalian berdasarkan hari terlambat × tarif per hari; mahasiswa dengan denda belum lunas tidak bisa meminjam lagi.
-- **Reservasi buku** — antrean untuk buku yang stoknya habis, dengan batas waktu pengambilan.
-- **Ulasan & rating** — skala 1–5, hanya untuk buku dengan transaksi selesai.
-- **Pengumuman** — kategori Operational / Service / Event, status draft / published / archived.
-- **Notifikasi mahasiswa** — pengingat dan informasi transaksi.
-- **Laporan Admin** — rekap transaksi dan denda.
-- **Buku populer** — 5 buku terpopuler di homepage berdasarkan jumlah peminjaman.
+- **Perpanjangan**  pengajuan oleh mahasiswa, persetujuan/penolakan oleh pegawai.
+- **Denda otomatis**  dihitung saat pengembalian berdasarkan hari terlambat × tarif per hari; mahasiswa dengan denda belum lunas tidak bisa meminjam lagi.
+- **Reservasi buku**  antrean untuk buku yang stoknya habis, dengan batas waktu pengambilan.
+- **Ulasan & rating**  skala 1–5, hanya untuk buku dengan transaksi selesai.
+- **Pengumuman**  kategori Operational / Service / Event, status draft / published / archived.
+- **Notifikasi mahasiswa**  pengingat dan informasi transaksi.
+- **Laporan Admin**  rekap transaksi dan denda.
+- **Buku populer**  5 buku terpopuler di homepage berdasarkan jumlah peminjaman.
 
 ---
 
@@ -210,7 +210,7 @@ Buat juga file `jsconfig.json` di root project (agar alias `@/` bekerja):
 
 Pilih **salah satu** cara:
 
-**Cara A — Terminal (`psql`)**
+**Cara A  Terminal (`psql`)**
 
 ```bash
 psql -U postgres -c "CREATE DATABASE booklyn;"
@@ -218,7 +218,7 @@ psql -U postgres -c "CREATE DATABASE booklyn;"
 
 Masukkan password user `postgres` jika diminta.
 
-**Cara B — pgAdmin 4**
+**Cara B  pgAdmin 4**
 
 1. Buka pgAdmin, lalu sambungkan ke server PostgreSQL.
 2. Klik kanan **Databases** → **Create** → **Database...**
@@ -230,7 +230,7 @@ Masukkan password user `postgres` jika diminta.
 
 Semua file SQL ada di folder `DataBase/`. Cara paling mudah adalah menjalankan satu file `setup_all.sql` yang otomatis menjalankan seluruh file SQL dengan urutan yang benar.
 
-**Cara A — Terminal (paling mudah, disarankan)**
+**Cara A  Terminal (paling mudah, disarankan)**
 
 Masuk **ke dalam folder `DataBase`** terlebih dahulu (ini penting karena `setup_all.sql` memakai path relatif):
 
@@ -242,7 +242,7 @@ cd ..
 
 Jika berhasil, kamu akan melihat rangkaian pesan `>> 1/14 ...` sampai `>> SELESAI. Database BOOKLYN siap dipakai.`
 
-**Cara B — pgAdmin 4 (tanpa terminal)**
+**Cara B  pgAdmin 4 (tanpa terminal)**
 
 Buka **Query Tool** pada database `booklyn` (klik kanan database → **Query Tool**), lalu buka dan jalankan file-file berikut **satu per satu, sesuai urutan** (ikon ▶ atau tekan `F5`):
 
