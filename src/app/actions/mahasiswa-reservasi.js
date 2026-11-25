@@ -258,9 +258,9 @@ export async function getMyReservations() {
         br.cancelled_at,
         br.expired_at,
 
-        b.judul,
-        b.penulis,
-        b.sampul,
+        b.judul AS title,
+        b.penulis AS author,
+        b.sampul AS cover_url,
 
         CASE
           WHEN br.status = 'menunggu' THEN
@@ -273,7 +273,7 @@ export async function getMyReservations() {
             ) + 1
 
           ELSE NULL
-        END AS posisi_antrean
+        END AS queue_position
 
       FROM book_reservations br
 
