@@ -59,15 +59,15 @@ function validateUser(data, isCreate = false) {
     throw new Error("Password baru minimal 8 karakter.");
   }
 
-  const nomorIdentitas = String(data.nomor_identitas || "").trim();
+ const nomorIdentitas = String(data.nomor_identitas || "").trim();
 
-  if (role === "member" && !nomorIdentitas) {
-    throw new Error("Nomor identitas mahasiswa wajib diisi.");
-  }
+if (!nomorIdentitas) {
+  throw new Error("Nomor identitas wajib diisi.");
+}
 
-  if (role === "member" && nomorIdentitas.length > 30) {
-    throw new Error("Nomor identitas maksimal 30 karakter.");
-  }
+if (nomorIdentitas.length > 30) {
+  throw new Error("Nomor identitas maksimal 30 karakter.");
+}
 
   if (status === "rejected" && !String(data.alasan_penolakan || "").trim()) {
     throw new Error("Alasan penolakan wajib diisi.");
@@ -148,18 +148,16 @@ export async function createUser(data) {
 
       const newUser = result.rows[0];
 
-      if (user.role === "member") {
-        await client.query(
-          `
-          INSERT INTO members (
-            user_id,
-            nomor_identitas
-          )
-          VALUES ($1, $2)
-          `,
-          [newUser.id, user.nomorIdentitas]
-        );
-      }
+      await client.query(
+        `
+        INSERT INTO members (
+          user_id,
+          nomor_identitas
+        )
+        VALUES ($1, $2)
+        `,
+        [newUser.id, user.nomorIdentitas]
+      );
 
       return {
         success: true,
@@ -185,9 +183,6 @@ export async function updateUser(id, data) {
     throw new Error("ID pengguna tidak valid.");
   }
 
-  if (String(admin.id) === String(userId)) {
-    throw new Error("Admin tidak dapat mengedit akunnya sendiri.");
-  }
 
   const user = validateUser(data, false);
 
@@ -271,39 +266,36 @@ export async function updateUser(id, data) {
         ]
       );
 
-      if (user.role === "member") {
-        const member = await client.query(
-          `
-          SELECT id
-          FROM members
-          WHERE user_id = $1
-          `,
-          [userId]
-        );
+const member = await client.query(
+  `
+  SELECT id
+  FROM members
+  WHERE user_id = $1
+  `,
+  [userId]
+);
 
-        if (member.rows.length === 0) {
-          await client.query(
-            `
-            INSERT INTO members (
-              user_id,
-              nomor_identitas
-            )
-            VALUES ($1, $2)
-            `,
-            [userId, user.nomorIdentitas]
-          );
-        } else {
-          await client.query(
-            `
-            UPDATE members
-            SET nomor_identitas = $1,
-                updated_at = NOW()
-            WHERE user_id = $2
-            `,
-            [user.nomorIdentitas, userId]
-          );
-        }
-      }
+if (member.rows.length === 0) {
+  await client.query(
+    `
+    INSERT INTO members (
+      user_id,
+      nomor_identitas
+    )
+    VALUES ($1, $2)
+    `,
+    [userId, user.nomorIdentitas]
+  );
+} else {
+  await client.query(
+    `
+    UPDATE members
+    SET nomor_identitas = $1
+    WHERE user_id = $2
+    `,
+    [user.nomorIdentitas, userId]
+  );
+}
 
       return { success: true };
     });
