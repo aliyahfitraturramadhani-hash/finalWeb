@@ -127,7 +127,7 @@ BOOKLYN menggunakan PostgreSQL dengan 13 tabel:
 
 Ikuti langkah berurutan dari atas ke bawah. Kalau ada yang gagal, lihat bagian [Troubleshooting](#11-troubleshooting).
 
-### ✅ Langkah 0 — Pastikan sudah terpasang
+### ✅ Langkah 0  Pastikan sudah terpasang
 
 | Software | Cek dengan perintah | Unduh |
 |---|---|---|
@@ -142,7 +142,7 @@ Ikuti langkah berurutan dari atas ke bawah. Kalau ada yang gagal, lihat bagian [
 
 ---
 
-### 📥 Langkah 1 — Clone repository
+### 📥 Langkah 1  Clone repository
 
 ```bash
 git clone https://github.com/aliyahfitraturramadhani-hash/finalWeb.git
@@ -151,7 +151,7 @@ cd finalWeb
 
 ---
 
-### 📦 Langkah 2 — Install dependencies
+### 📦 Langkah 2  Install dependencies
 
 ```bash
 npm install
@@ -206,7 +206,7 @@ Buat juga file `jsconfig.json` di root project (agar alias `@/` bekerja):
 
 ---
 
-### 🗄️ Langkah 3 — Buat database kosong bernama `booklyn`
+### 🗄️ Langkah 3  Buat database kosong bernama `booklyn`
 
 Pilih **salah satu** cara:
 
@@ -226,7 +226,7 @@ Masukkan password user `postgres` jika diminta.
 
 ---
 
-### 🧱 Langkah 4 — Import struktur tabel dan dataset (SQL)
+### 🧱 Langkah 4  Import struktur tabel dan dataset (SQL)
 
 Semua file SQL ada di folder `DataBase/`. Cara paling mudah adalah menjalankan satu file `setup_all.sql` yang otomatis menjalankan seluruh file SQL dengan urutan yang benar.
 
@@ -300,7 +300,7 @@ cd ..
 
 ---
 
-### 🔐 Langkah 5 — Hubungkan aplikasi ke database (file `.env.local`)
+### 🔐 Langkah 5  Hubungkan aplikasi ke database (file `.env.local`)
 
 Aplikasi membaca koneksi database dari environment variable. Buat file bernama **`.env.local`** di **root project** (sejajar dengan `package.json`).
 
@@ -346,7 +346,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ---
 
-### ▶️ Langkah 6 — Jalankan aplikasi
+### ▶️ Langkah 6  Jalankan aplikasi
 
 ```bash
 npm run dev
