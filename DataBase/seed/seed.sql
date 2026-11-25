@@ -18,6 +18,8 @@ INSERT INTO loans (id, kode_pinjam, member_id, processed_by, status, batas_ambil
 (1010,'DEMO-C-002',5,2,'selesai','2026-11-23 17:00:00+08','2026-10-31','2026-11-07',0,'Dataset demo BOOKLYN'),
 (1011,'DEMO-C-003',1,2,'selesai','2026-11-23 17:00:00+08','2026-11-08','2026-11-15',0,'Dataset demo BOOKLYN');
 
+
+
 -- Loan items. copy_id values assume the baseline copy IDs are 25-35.
 INSERT INTO loan_items (id, loan_id, copy_id, tanggal_kembali, kondisi_kembali) VALUES
 (2001,1001,25,NULL,NULL),
